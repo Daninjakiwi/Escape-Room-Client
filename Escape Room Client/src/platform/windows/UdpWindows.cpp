@@ -1,15 +1,39 @@
 #include <iostream>
 #include <platform/windows/UdpWindows.hpp>
+#include <algorithm>
+
 
 #ifdef BUILD_WINDOWS
 
 #include <WS2tcpip.h>
-#include <Windows.h>
+
+void findAndReplaceAll(std::string& data, std::string toSearch, std::string replaceStr)
+{
+	// Get the first occurrence
+	size_t pos = data.find(toSearch);
+	// Repeat till end is reached
+	while (pos != std::string::npos)
+	{
+		// Replace this occurrence of Sub String
+		data.replace(pos, toSearch.size(), replaceStr);
+		// Get the next occurrence from the current position
+		pos = data.find(toSearch, pos + replaceStr.size());
+	}
+}
 
 UdpWindows::UdpWindows(const std::string& ip, int port) : _UdpConnection(ip, port), _socket(0), _callback(nullptr),_is_running(false) {
 	_socket = socket(AF_INET, SOCK_DGRAM, 0);
-	int timeout = 2000;
+	int timeout = 50;
 	setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+}
+
+UdpWindows::UdpWindows() : _UdpConnection("", 0), _socket(0), _callback(nullptr), _is_running(false) {
+
+}
+
+void UdpWindows::SetDestination(const std::string& ip, int port) {
+	_ip = ip;
+	_port = port;
 }
 
 UdpWindows::~UdpWindows() {
@@ -24,7 +48,13 @@ void UdpWindows::Send(const std::string& message) {
 
 	inet_pton(AF_INET, _ip.c_str(), &server.sin_addr);
 
-	sendto(_socket, message.c_str(), message.size() + 1, 0, (sockaddr*)&server, sizeof(server));
+	std::string encoded = message;
+
+	findAndReplaceAll(encoded, "\"", "%22");
+	findAndReplaceAll(encoded, "{", "%7B");
+	findAndReplaceAll(encoded, "}", "%7D");
+
+	sendto(_socket, encoded.c_str(), encoded.size() + 1, 0, (sockaddr*)&server, sizeof(server));
 }
 
 void UdpWindows::ListenForMessages(MessageCallback callback) {
@@ -41,7 +71,7 @@ void UdpWindows::StopMessages() {
 }
 
 void UdpWindows::ReadMessages() {
-	const int buffer_size = 1024;
+	const int buffer_size = 256;
 
 	sockaddr_in client;
 
@@ -57,8 +87,13 @@ void UdpWindows::ReadMessages() {
 		int success = recvfrom(_socket, buffer, buffer_size, 0, (sockaddr*)&client, &client_size);
 
 		if (success > 0) {
-			if (_callback != nullptr) {
-				_callback(buffer);
+			if (_callback != nullptr && _is_running) {
+				std::string out;
+				out.resize(buffer_size);
+
+				memcpy(out.data(), buffer, buffer_size);
+
+				_callback(out);
 			}
 		}
 	}
