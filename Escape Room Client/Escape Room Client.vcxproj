@@ -91,13 +91,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core\GameObject.cpp" />
+    <ClCompile Include="src\core\Hitbox.cpp" />
     <ClCompile Include="src\core\Network.cpp" />
     <ClCompile Include="src\core\Player.cpp" />
     <ClCompile Include="src\core\PolyTexture.cpp" />
     <ClCompile Include="src\core\Scene.cpp" />
     <ClCompile Include="src\core\Transform.cpp" />
     <ClCompile Include="src\core\Util.cpp" />
-    <ClCompile Include="src\objects\floor.cpp" />
+    <ClCompile Include="src\objects\Wall.cpp" />
+    <ClCompile Include="src\objects\Ground.cpp" />
     <ClCompile Include="src\platform\windows\UdpWindows.cpp" />
     <ClCompile Include="src\Main.cpp">
       <SubType>
@@ -126,7 +128,8 @@
     <ClInclude Include="include\core\Transform.hpp" />
     <ClInclude Include="include\core\Util.hpp" />
     <ClInclude Include="include\interface\UdpConnection.hpp" />
-    <ClInclude Include="include\objects\floor.hpp" />
+    <ClInclude Include="include\objects\Wall.hpp" />
+    <ClInclude Include="include\objects\Ground.hpp" />
     <ClInclude Include="include\platform\windows\UdpWindows.hpp" />
     <ClInclude Include="include\rooms\MurderMystery.hpp" />
     <ClInclude Include="include\rooms\Room.hpp" />

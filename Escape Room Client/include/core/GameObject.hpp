@@ -5,6 +5,8 @@
 #include "Hitbox.hpp"
 
 class GameObject {
+	friend class MurderMystery;
+	friend class Player;
 protected:
 	volt::Material* _material;
 	volt::Mesh* _mesh;
@@ -16,8 +18,9 @@ public:
 
 	void SetMaterial(volt::Material* material);
 	void SetMesh(volt::Mesh* mesh);
-	void CollidesWith(GameObject& obj);
+	bool CollidesWith(GameObject& obj);
 
 	virtual void Update(Environment& env);
 	virtual void Draw(volt::Window& window);
+	virtual void OnLook();
 };

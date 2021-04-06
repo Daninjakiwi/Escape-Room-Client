@@ -2,6 +2,7 @@
 #include "GameObject.hpp"
 
 class Player : public GameObject {
+	friend class Room;
 	static Player* player;
 private:
 	std::string name;

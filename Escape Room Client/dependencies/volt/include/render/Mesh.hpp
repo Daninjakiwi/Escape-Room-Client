@@ -19,7 +19,7 @@ namespace volt {
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 
-		static Mesh createPrimative(PrimativeTypes type);
+		static Mesh createPrimative(PrimativeTypes type, Vec2 scale = { 1.0f,1.0f });
 	};
 
 	

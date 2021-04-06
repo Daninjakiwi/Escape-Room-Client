@@ -2,12 +2,9 @@
 
 #include "rooms/Room.hpp"
 #include <ctime>
+#include <sstream>
 
-struct reserved_state {
-	bool playing; //Is the game being played
-	bool victory; //Has the game been won
-	long long end_time;
-};
+
 
 void make_anouncement(const std::string& message, unsigned int duration, std::string* output) {
 	*output = message;
@@ -17,11 +14,25 @@ void make_anouncement(const std::string& message, unsigned int duration, std::st
 
 Room::Room(const std::string& data, unsigned int byte_count) : byte_count(byte_count), state(nullptr),
 announcement("", "width: 94%;height: 6%;left:3%;bottom: 85%;text-align:center;colour:#FFFFFF00;text-size:auto large;"),
-timer("--:--","width: 10%;height: 5%;left: 85;bottom: 85%;text-align:center;colour:#FFFFFFFF;text-size:auto large;") {
+timer("--:--","width: 10%;height: 5%;left: 70%;bottom: 85%;text-align:center;colour:#FFFFFFFF;text-size:48px;") {
 	state = malloc(byte_count);
 
 	if (state) {
 		memcpy(state, data.data(), byte_count);
+	}
+}
+
+Room::~Room() {
+	for (auto obj : objects) {
+		delete obj.second;
+	}
+
+	for (auto mesh : meshes) {
+		delete mesh.second;
+	}
+
+	for (auto mat : materials) {
+		delete mat.second;
 	}
 }
 
@@ -56,11 +67,22 @@ void Room::LocalUpdate(Environment& env) {
 			}
 
 			str = str_minutes + ":" + str_seconds;
+
+			std::stringstream ss;
+
+			ss << players[0]._transform.position;
+
+			str = ss.str();
+
 		}
 	}
 
 	timer.Update(env);
 	timer.Draw(*env.window);
+
+	volt::Quad q({ (env.window->getSize().x / 2) - 2.0f, (env.window->getSize().y / 2) - 2.0f }, { 4.0f,4.0f }, {1.0f,1.0f,0.0f,1.0f});
+
+	env.window->drawQuad(q, SEPERATE);
 }
 
 void Room::MakeAnnouncement(const std::string& message, unsigned int duration) {

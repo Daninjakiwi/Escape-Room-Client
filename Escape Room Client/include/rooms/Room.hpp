@@ -7,8 +7,15 @@
 #include "core/GameObject.hpp"
 #include "core/Player.hpp"
 
+struct reserved_state {
+	bool playing; //Is the game being played
+	bool victory; //Has the game been won
+	long long end_time;
+};
+
 class Room {
 	friend class Player;
+	friend class wall;
 private:
 	unsigned int byte_count;
 	Label announcement;
@@ -22,7 +29,7 @@ protected:
 	void* state;
 public:
 	Room(const std::string& data, unsigned int byte_count);
-	~Room() = default;
+	~Room();
 
 	virtual void LocalUpdate(Environment& env);
 	void ServerUpdate(const std::string& message);
