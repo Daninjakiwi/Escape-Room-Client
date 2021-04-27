@@ -5,14 +5,19 @@
 enum Align {
 	LEFT = 0,
 	CENTER = 1,
-	RIGHT = 2
+	RIGHT = 2,
+	CENTERTOP
 };
 
 
 Label::Label(const std::string& text, const std::string& style) : GuiElement(style),
-_text(text), _font(volt::fonts::SEGOE), _text_size(16), _text_align(0), _text_colour(0.0f,0.0f,0.0f,1.0f)
+_text(text), _font(volt::fonts::SEGOE), _text_size(0), _text_align(0), _text_colour(0.0f,0.0f,0.0f,1.0f)
 {
 
+}
+
+void Label::setText(const std::string& text) {
+	_text = text;
 }
 
 void Label::Update(Environment& env) {
@@ -32,9 +37,19 @@ void Label::Update(Environment& env) {
 				else if (value == "right") {
 					_text_align = Align::RIGHT;
 				}
+				else if (value == "center-top") {
+					_text_align = Align::CENTERTOP;
+				}
 			}
 			else if (attribute == "font") {
 				//Implement when more fonts added
+			}
+			else if (attribute == "width") {
+				if (value == "fit") {
+					volt::Font* font = volt::Font::get(_font);
+					float length = font->widthOf(_text, _text_size);
+					_size.width = length;
+				}
 			}
 			else if (attribute == "text-size") {
 				if (value.length() >= 4 && value.substr(0, 4) == "auto") {
@@ -53,14 +68,20 @@ void Label::Update(Environment& env) {
 					}
 
 					bool flag = false;
-					int new_size = 1;
+					int new_size = 0;
+					std::string text = _text;
+					if (facade.length() > 0) {
+						text = facade;
+					}
+
 					volt::Font* font = volt::Font::get(_font);
 					if (_text.length() != 0) {
 						while (!flag) {
-							if (font->widthOf(_text, new_size) < _size.x * scale) {
+
+							if (font->widthOf(text, new_size) < _size.x * scale) {
 								new_size += 1;
 							}
-							else if (font->widthOf(_text, new_size) >= _size.x * scale) {
+							else if (font->widthOf(text, new_size) >= _size.x * scale) {
 								flag = true;
 							}
 						}
@@ -75,6 +96,14 @@ void Label::Update(Environment& env) {
 					if (value.substr(value.length() - 2, 2) == "px") {
 						_text_size = std::stoi(value);
 					}
+					else if (value.substr(value.length() - 1, 1) == "w") {
+						float percentage = std::stof(value);
+						_text_size = percentage * (float)env.window->getSize().width;
+					}
+					else if (value.substr(value.length() - 1, 1) == "h") {
+						float percentage = std::stof(value);
+						_text_size = percentage * (float)env.window->getSize().height;
+					}
 				}
 			}
 			else if (attribute == "text-colour") {
@@ -82,6 +111,15 @@ void Label::Update(Environment& env) {
 					value = value.substr(1);
 				}
 				_text_colour = MakeColour(value);
+			}
+			else if (attribute == "text-size-max") {
+				int size = std::stoi(value.substr(0, value.length() - 2));
+				if (_text_size > size) {
+					_text_size = size;
+				}
+			}
+			else if (attribute == "text-facade") {
+				facade = value;
 			}
 		}
 	}
@@ -104,6 +142,18 @@ void Label::Draw(volt::Window& window) {
 	else if (_text_align == Align::RIGHT) {
 		window.drawString(_text, { _pos.x + _size.x - font->widthOf(_text, _text_size), _pos.y + (_size.y / 2.0f) }, _text_size, _font, _text_colour);
 	}
+	else if (_text_align == Align::CENTERTOP) {
+		float w = font->widthOf(_text, _text_size);
+		window.drawString(_text, { _pos.x + ((_size.x - w) / 2.0f), _pos.y + _size.y - (_text_size / 2.0f) }, _text_size, _font, _text_colour);
+	}
+
+}
+
+void Label::Draw(volt::Window& window, volt::Vec4 colour) {
+	volt::Vec4 temp = _text_colour;
+	_text_colour = colour;
+	Draw(window);
+	_text_colour = temp;
 
 }
 

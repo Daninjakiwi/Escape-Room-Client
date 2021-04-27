@@ -9,6 +9,7 @@ class Home : public Scene {
 public:
 	bool guest;
 	Button join, host, settings, go;
+	Label welcome;
 	InputField code;
 	bool show_code;
 	static bool waiting;

@@ -3,6 +3,9 @@
 #include "GuiElement.hpp"
 
 class Label : public GuiElement {
+	friend class SelectScenario;
+private:
+	std::string facade;
 protected:
 	std::string _text;
 	unsigned long long _font;
@@ -15,6 +18,8 @@ public:
 
 	virtual void Update(Environment& env);
 	virtual void Draw(volt::Window& window);
+	void Draw(volt::Window& window, volt::Vec4 colour);
 
 	const std::string& getText();
+	void setText(const std::string& text);
 };

@@ -99,11 +99,17 @@ void InputField::Draw(volt::Window& window) {
 		replaced = _text;
 	}
 
+	if (selected != this && _text.size() == 0) {
+		replaced = _hint;
+	}
+
 	std::string temp = replaced;
 
 	if (show_cursor && selected == this) {
 		temp += "|";
 	}
+
+
 
 	if (_text_align == Align::LEFT) {
 		window.drawString(temp, { _pos.x, _pos.y + (_size.y / 2.0f) }, _text_size, _font, _text_colour);

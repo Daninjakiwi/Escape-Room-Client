@@ -9,6 +9,10 @@ GuiElement::~GuiElement() {
 
 }
 
+void GuiElement::SetStyle(const std::string& style) {
+	_style = style;
+}
+
 void GuiElement::Update(Environment& env) {
 
 	Split split(_style);
@@ -27,6 +31,17 @@ void GuiElement::Update(Environment& env) {
 				if (value.substr(value.length() - 2) == "px") {
 					_size.y = std::stof(value.substr(0, value.length() - 2));
 				}
+				else if (value.substr(0, 5) == "width") {
+					if (value.length() > 5) {
+						if (value.substr(value.length() - 1) == "%") {
+							_size.y = _size.x * std::stof(value.substr(6, value.length() - 1)) / 100.0f;
+						}
+						
+					}
+					else {
+						_size.y = _size.x;
+					}
+				}
 				else if (value.substr(value.length() - 1) == "%") {
 					_size.y= env.window->getSize().y * (std::stof(value.substr(0, value.length() - 1)) / 100.0f);
 				}
@@ -37,6 +52,9 @@ void GuiElement::Update(Environment& env) {
 				}
 				else if (value.substr(value.length() - 1) == "%") {
 					_pos.x = env.window->getSize().x * (std::stof(value.substr(0, value.length() - 1)) / 100.0f);
+				}
+				else if (value == "center") {
+					_pos.x = ((float)env.window->getSize().x / 2.0f) - (_size.x / 2.0f);
 				}
 			}
 			else if (attribute == "right") {
@@ -104,8 +122,11 @@ volt::Vec4 GuiElement::MakeColour(const std::string & value) {
 }
 
 void GuiElement::Draw(volt::Window& window) {
-	volt::Quad q(_pos, _size, _colour);
-	window.drawQuad(q, SEPERATE);
+	if (_colour.a > 0.0f) {
+		volt::Quad q(_pos, _size, _colour);
+		window.drawQuad(q, SEPERATE);
+	}
+
 }
 
 Split::Split(const std::string& _data) {

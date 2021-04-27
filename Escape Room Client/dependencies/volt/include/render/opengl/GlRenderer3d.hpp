@@ -11,7 +11,9 @@ namespace volt {
 		Material& material;
 		Mat4 transform;
 
-		DrawMesh(unsigned int start,unsigned int count,Material& material,Mat4 transform);
+		unsigned int flags;
+
+		DrawMesh(unsigned int start,unsigned int count,Material& material,Mat4 transform, unsigned int flags);
 	};
 
 	class GlRenderer3d : public Renderer3d {
@@ -30,8 +32,9 @@ namespace volt {
 		~GlRenderer3d();
 
 		void setViewMatrix(Camera& cam);
-		void drawMesh(Mesh& mesh, Material& material, Mat4 transform);
+		void drawMesh(Mesh& mesh, Material& material, Mat4 transform, unsigned int flags);
 		void loadEnvironmentMap(float* data, iVec2 size);
+		void setLight(int index, Light& light);
 
 		void renderFrame();
 	private:

@@ -13,7 +13,5 @@ public:
 
 	void Update(Environment& env);
 
-	void Draw(volt::Window& window);
-
 	std::string& GetName();
 };

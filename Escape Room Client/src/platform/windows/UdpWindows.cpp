@@ -71,7 +71,7 @@ void UdpWindows::StopMessages() {
 }
 
 void UdpWindows::ReadMessages() {
-	const int buffer_size = 256;
+	const int buffer_size = 512;
 
 	sockaddr_in client;
 

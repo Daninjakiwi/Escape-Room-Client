@@ -8,6 +8,8 @@ Room* GameScene::room = nullptr;
 bool GameScene::ready = false;
 std::string GameScene::msg = "";
 
+
+
 void GameScene::StartUpListen(const std::string& message) {
 	ready = true;
 	msg = message;
@@ -43,16 +45,32 @@ void GameScene::LoadRoom(Environment& env) {
 	if (ready) {
 		Json out = Util::JsonParse(msg);
 
-		room = new MurderMystery(out.GetValue("state"));
+
+		
+		room = new MurderMystery(out.GetValue("state"), env);	
 
 		int i = 0;
 
 		Json json;
 		json.AddPair("action", "player_join");
 
+		Json update;
+		update.AddPair("action", "player_update");
+
 		while (out.HasKey("player" + std::to_string(i))) {
-			json.AddPair("username", out.GetValue("player") + std::to_string(i));
+			std::string name = out.GetValue("player" + std::to_string(i));
+
+			json.AddPair("username", name);
 			room->ServerUpdate(json);
+
+			if (out.HasKey("player_pos" + std::to_string(i))) {
+				update.AddPair("username", name);
+				update.AddPair("position", out.GetValue("player_pos" + std::to_string(i)));
+				update.AddPair("rotation", out.GetValue("player_rot" + std::to_string(i)));
+
+				room->ServerUpdate(update);
+			}
+
 			i++;
 		}
 
@@ -62,13 +80,11 @@ void GameScene::LoadRoom(Environment& env) {
 		env.server->Send(send);
 
 		env.scene = Scene::Get("Game");
+
+		
 	}
-
-
-
-
-
 }
+
 
 GameScene::GameScene() {
 }

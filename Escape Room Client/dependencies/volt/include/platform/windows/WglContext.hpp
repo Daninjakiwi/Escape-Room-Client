@@ -26,8 +26,9 @@ namespace volt {
 		void drawString(const std::string& text, Vec2 pos, unsigned int size, unsigned long long font, Vec4 colour);
 		void drawTriangle(Vec2 p1, Vec2 p2, Vec2 p3, Vec4 colour);
 		void setViewMatrix(Camera& cam);
-		void drawMesh(Mesh& mesh, Material& material, Mat4 transform);
+		void drawMesh(Mesh& mesh, Material& material, Mat4 transform, unsigned int flags);
 		void loadEnvironmentMap(float* data, iVec2 size);
+		void setLight(int index, Light& light);
 
 		void makeCurrent();
 

@@ -13,7 +13,7 @@ public:
 	static bool is_connecting;
 	static bool connection_failed;
 
-	Button guest, login, create, again;
+	Button guest, login, create, again, credits;
 	Label connecting, failed;
 public:
 	MainMenu();

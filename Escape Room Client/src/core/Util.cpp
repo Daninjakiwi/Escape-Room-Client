@@ -4,6 +4,30 @@
 #include <sstream>
 #include <algorithm>
 
+std::string Util::VectorToString(volt::Vec3 vec) {
+	std::string out = std::to_string(vec.x) + "#" + std::to_string(vec.y) + "#" + std::to_string(vec.z);
+	return out;
+}
+
+volt::Vec3 Util::StringToVector(const std::string& str) {
+	volt::Vec3 out;
+
+	std::stringstream ss(str);
+	std::string section;
+
+	std::getline(ss, section, '#');
+	out.x = std::stof(section);
+
+	std::getline(ss, section, '#');
+	out.y = std::stof(section);
+
+	std::getline(ss, section, '#');
+	out.z = std::stof(section);
+
+	return out;
+
+}
+
 Json::Json() {
 
 }

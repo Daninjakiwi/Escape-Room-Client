@@ -3,6 +3,7 @@
 #include "core/Environment.hpp"
 
 class GuiElement {
+	friend class SelectScenario;
 protected:
 	volt::Vec2 _pos, _size;
 	volt::Vec4 _colour;
@@ -13,6 +14,8 @@ public:
 
 	virtual void Update(Environment& env);
 	virtual void Draw(volt::Window& window);
+
+	void SetStyle(const std::string& style);
 
 protected:
 	volt::Vec4 MakeColour(const std::string& value);

@@ -6,6 +6,7 @@
 #include "ui/Label.hpp"
 #include "core/GameObject.hpp"
 #include "core/Player.hpp"
+#include "core/Inventory.hpp"
 
 struct reserved_state {
 	bool playing; //Is the game being played
@@ -20,15 +21,27 @@ private:
 	unsigned int byte_count;
 	Label announcement;
 	Label timer;
-
+	std::vector<Json> message_queue;
 protected:
-	std::vector<Player> players;
+	std::vector<Player*> players;
 	std::unordered_map<std::string, GameObject*> objects;
 	std::unordered_map<std::string, volt::Mesh*> meshes;
 	std::unordered_map<std::string, volt::Material*> materials;
+	Inventory inventory;
 	void* state;
+	int min_players;
+	int max_players;
+	bool menu_open;
+	bool inventory_open;
+
+	std::string username;
+
+
+
 public:
-	Room(const std::string& data, unsigned int byte_count);
+	bool paused;
+
+	Room(const std::string& data, unsigned int byte_count, int min_players, int max_players);
 	~Room();
 
 	virtual void LocalUpdate(Environment& env);
@@ -38,5 +51,5 @@ public:
 
 	void* GetState();
 
-	virtual void Draw(volt::Window& window) = 0;
+	virtual void Draw(volt::Window& window);
 };

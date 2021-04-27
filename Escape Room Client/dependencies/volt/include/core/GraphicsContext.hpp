@@ -5,6 +5,7 @@
 #include <render/Mesh.hpp>
 #include <render/Material.hpp>
 #include <render/Camera.hpp>
+#include <render/Light.hpp>
 
 namespace volt {
 	enum class ContextType {
@@ -23,8 +24,9 @@ namespace volt {
 		virtual void drawString(const std::string& text, Vec2 pos, unsigned int size, unsigned long long font, Vec4 colour) {};
 		virtual void drawTriangle(Vec2 p1, Vec2 p2, Vec2 p3, Vec4 colour) {};
 		virtual void setViewMatrix(Camera& cam) {};
-		virtual void drawMesh(Mesh& mesh, Material& material, Mat4 transform) {};
+		virtual void drawMesh(Mesh& mesh, Material& material, Mat4 transform, unsigned int flags) {};
 		virtual void loadEnvironmentMap(float* data, iVec2 size) {};
+		virtual void setLight(int index, Light& light) {};
 
 		virtual void makeCurrent() {};
 

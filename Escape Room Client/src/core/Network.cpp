@@ -50,6 +50,8 @@ bool Network::Initialise() {
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl_handle = curl_easy_init();
 
+	//curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 5);
+
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteString);
 
 	return true;
